@@ -99,6 +99,8 @@ main() {
         err "This is not a valid option. Try the help menu with -h"
     esac
   done
+
+  tmux list-sessions
 }
 
 [[ "$BASH_SOURCE" == "$0" ]] && main "$@"
