@@ -9,6 +9,8 @@ AT_off := @
 AT_on :=
 AT = $(AT_$(DEBUG))
 
+GROUP :=
+
 UNAME = $(shell uname -s)
 TMUX_EXISTS = $(shell tmux -V 2>/dev/null)
 
@@ -32,16 +34,18 @@ endif
 
 run: install
 	$(AT)tmux start-server
-	$(AT)./bin/run.sh -s
+	$(AT)./bin/run.sh -s $(GROUP)
 
 stop:
-	$(AT)./bin/run.sh -k
+	$(AT)./bin/run.sh -k $(GROUP)
 	$(AT)tmux kill-server
 
 ########### Private targets ############
 
 install-linux:
 	$(AT)sudo apt-get install tmux
+	$(AT)sudo apt-get install jq
 
 install-mac:
 	$(AT)brew install tmux
+	$(AT)brew install jq

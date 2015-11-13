@@ -92,13 +92,14 @@ main() {
   sourceSettings
 
   local option
-  while getopts 's:kh' option; do
+  while getopts 's:k:h' option; do
     case $option in
       s)
         local group=${OPTARG}
         loopOverSessions startSession "$group"
         ;;
       k)
+        local group=${OPTARG}
         loopOverSessions killSession "$group"
         ;;
       h)
