@@ -2,7 +2,7 @@
 
 ROOT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
-PROJECTS_FILE="$HOME/.projects.conf"
+PROJECTS_FILE="$HOME/.projects.json"
 
 err() {
   echo "Error : $@" >/dev/stderr
@@ -47,14 +47,22 @@ getRepo() {
 
 loopOverSessions() {
   local fn="$1"
-  local line
-  while read -r line; do
-    local name="$( echo "$line" | cut -d ' ' -f1 )"
-    local repo="$( echo "$line" | cut -d ' ' -f2 )"
-    local dir="$( echo "$line" | cut -d ' ' -f3 )"
+  local group="$2"
+  local name
+  local repo
+  local dir
+  local len
+  declare -a arr
+
+  len=$(cat "$PROJECTS_FILE" | jq '.work[0] | length' | bc)
+  for (( index=0; index<$len ; index++ )); do
+    arr=( $(cat "$PROJECTS_FILE" | jq ".$group[$index] | [.name, .repo, .dir]" | sed -e "s#,##g;s#\[##g;s#\]##g;s#\"##g;s#\'##g") )
+    name="${arr[0]}"
+    repo="${arr[1]}"
+    dir="${arr[2]}"
     getRepo "$repo" "$dir"
     eval "$(declare -F "$fn")" "$name" "$dir"
-  done < "$PROJECTS_FILE"
+  done
 }
 
 validate() {
@@ -63,7 +71,7 @@ validate() {
   [[ -z "$TMUX" ]] || err "Dont start nested tmux sessions"
 
   [[ -f "$PROJECTS_FILE" ]] \
-    || err "Missing $HOME/.projects.conf file"
+    || err "Missing $HOME/.projects.json file"
 }
 
 usage() {
@@ -74,7 +82,7 @@ usage() {
 
   OPTIONS:
   -h      Help menu
-  -s      Start all tmux sessions
+  -s      Accepts an argument. Start tmux sessions for that group
   -k      Kill all tmux sessions
   "
 }
@@ -84,13 +92,14 @@ main() {
   sourceSettings
 
   local option
-  while getopts 'skh' option; do
+  while getopts 's:kh' option; do
     case $option in
       s)
-        loopOverSessions startSession
+        local group=${OPTARG}
+        loopOverSessions startSession "$group"
         ;;
       k)
-        loopOverSessions killSession
+        loopOverSessions killSession "$group"
         ;;
       h)
         help
