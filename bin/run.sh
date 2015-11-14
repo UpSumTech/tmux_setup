@@ -90,7 +90,6 @@ startSessions() {
   local group="$1"
   sourceConfig
   loopOverSessions startSession "$group"
-  displayInfo
 }
 
 wrapAroundServerStart() {
@@ -132,6 +131,7 @@ main() {
       s)
         local group=${OPTARG}
         wrapAroundServerStart startSessions "$group"
+        displayInfo
         ;;
       k)
         local group=${OPTARG}
