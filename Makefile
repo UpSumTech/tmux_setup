@@ -27,18 +27,15 @@ ifndef TMUX_EXISTS
 ifeq ($(UNAME),Linux)
 	$(AT)$(MAKE) -f $(THIS_FILE) install-linux
 else ifeq ($(UNAME),Darwin)
-	echo "wtf"
 	$(AT)$(MAKE) -f $(THIS_FILE) install-mac
 endif
 endif
 
 run: install
-	$(AT)tmux start-server
 	$(AT)./bin/run.sh -s $(GROUP)
 
 stop:
 	$(AT)./bin/run.sh -k $(GROUP)
-	$(AT)tmux kill-server
 
 ########### Private targets ############
 
