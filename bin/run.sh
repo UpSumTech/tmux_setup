@@ -28,9 +28,9 @@ createWindowsAndPanes() {
 }
 
 execCommands() {
+  local name="$1"
   tmux send-keys -t "$name:1.1" C-z 'vim' Enter
   tmux send-keys -t "$name:2.2" C-z 'git status' Enter
-  tmux send-keys -t "$name:2.3" C-z 'htop' Enter
 }
 
 setCursorPosition() {
@@ -45,7 +45,7 @@ startSession() {
   [[ $( hasSession "$name" ) =~ true ]] && return
 
   createWindowsAndPanes "$name" "$dir"
-  execCommands
+  execCommands "$name"
   setCursorPosition "$name"
 }
 
