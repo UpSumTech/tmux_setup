@@ -26,6 +26,7 @@ Create a $HOME/.projects.json file with your project configuration like so
 From within the directory where you have cloned this project you can run the following
 
 1. `make install # To install tmux and the dependencies`
-2. `make run GROUP=<group-1> # To start the tmux sessions`
-3. `make stop GROUP=<group-1> # To kill the tmux sessions`
-4. `tmux attach-session -t <name-of-session-1> # To join the sessions`
+2. `make GROUP=<group-1> # To start the tmux sessions. Run is default goal in the Makefile`
+3. `make run GROUP=<group-1> # To start the tmux sessions`
+4. `make stop GROUP=<group-1> # To kill the tmux sessions`
+5. `tmux attach-session -t <name-of-session-1> # To join the sessions`
