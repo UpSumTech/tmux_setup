@@ -1,5 +1,5 @@
 ############ Goals ############
-.DEFAULT_GOAL := run
+.DEFAULT_GOAL := install
 
 ############ Vars and functions #############
 THIS_FILE = $(lastword $(MAKEFILE_LIST))
@@ -9,15 +9,11 @@ AT_off := @
 AT_on :=
 AT = $(AT_$(DEBUG))
 
-GROUP :=
-
 UNAME = $(shell uname -s)
 TMUX_EXISTS = $(shell tmux -V 2>/dev/null)
 
 ############ PHONY tasks #############
 .PHONY: install \
-	run \
-	stop \
 	install-linux \
 	install-mac
 
@@ -30,12 +26,6 @@ else ifeq ($(UNAME),Darwin)
 	$(AT)$(MAKE) -f $(THIS_FILE) install-mac
 endif
 endif
-
-run: install
-	$(AT)./bin/run.sh -s $(GROUP)
-
-stop:
-	$(AT)./bin/run.sh -k $(GROUP)
 
 ########### Private targets ############
 
