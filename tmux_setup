@@ -13,4 +13,5 @@ else
   die "Cant use this program in this OS - $(uname)"
 fi
 
-.$RESOLVED_BASH_SOURCE/bin/run.sh "$@"
+ROOT_DIR="$( cd "$( dirname "$RESOLVED_BASH_SOURCE" )" && pwd )"
+bash "$ROOT_DIR/bin/run.sh" "$@"
