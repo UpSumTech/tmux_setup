@@ -1,4 +1,16 @@
 #!/bin/bash
 
-RESOLVED_BASH_SOURCE="$( readlink -f $BASH_SOURCE )"
+die() {
+  echo >&2 "Error : $@"
+  exit 1;
+}
+
+if [[ $(uname) =~ Linux ]]; then
+  RESOLVED_BASH_SOURCE="$( readlink -f $BASH_SOURCE )"
+elif [[ $(uname) =~ Darwin ]]; then
+  RESOLVED_BASH_SOURCE="$( readlink -n $BASH_SOURCE )"
+else
+  die "Cant use this program in this OS - $(uname)"
+fi
+
 .$RESOLVED_BASH_SOURCE/bin/run.sh "$@"
