@@ -1,16 +1,11 @@
 #!/bin/bash
 
-LIB_DIR="/usr/local/lib"
-BIN_DIR="/usr/local/bin"
+LIB_DIR="$HOME/lib"
+BIN_DIR="$HOME/bin"
 
-die() {
-  echo >&2 "Error : $@"
-  exit 1;
-}
-
-validate() {
-  [[ -w "$LIB_DIR" ]] || die "User does not have write permission for $LIB_DIR"
-  [[ -w "$BIN_DIR" ]] || die "User does not have write permission for $BIN_DIR"
+prep() {
+  [[ -d "$LIB_DIR" ]] || mkdir "$LIB_DIR"
+  [[ -d "$BIN_DIR" ]] || mkdir "$BIN_DIR"
 }
 
 cloneRepo() {
@@ -29,10 +24,18 @@ generateBin() {
 }
 
 main() {
-  validate
+  prep
   cloneRepo
   build
   generateBin
+  echo "
+    You need to export the new $HOME/bin in your path.
+    You can open your ~/.bashrc or ~/.profile file and add this line at the bottom.
+
+    export PATH=$HOME/bin:$PATH
+
+    If you already have this in your path don't worry.
+  "
 }
 
 main
