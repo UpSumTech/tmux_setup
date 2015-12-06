@@ -35,4 +35,4 @@ main() {
   generateBin
 }
 
-[[ "$BASH_SOURCE" == "$0" ]] && main "$@"
+main
