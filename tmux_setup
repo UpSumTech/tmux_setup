@@ -1,0 +1,4 @@
+#!/bin/bash
+
+RESOLVED_BASH_SOURCE="$( readlink -f $BASH_SOURCE )"
+.$RESOLVED_BASH_SOURCE/bin/run.sh "$@"
