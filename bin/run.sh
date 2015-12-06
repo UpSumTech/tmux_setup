@@ -138,7 +138,7 @@ main() {
         loopOverSessions killSession "$group"
         ;;
       h)
-        help
+        usage
         ;;
       *)
         err "This is not a valid option. Try the help menu with -h"
