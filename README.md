@@ -1,6 +1,16 @@
 # tmux_setup
 A tool that sets up tmux and adds tmux configurations for your projects
 
+### Installation
+
+`curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/tmux_setup/master/bootstrap.sh | bash`
+
+Once this script runs it will create a $HOME/bin and $HOME/lib if not already present.
+You will have to add $HOME/bin to you $PATH.
+
+Add a line like this to the end of your ~/.bashrc or ~/.profile if not already there.
+`export PATH=$HOME/bin:$PATH`
+
 ### Configuration
 Create a $HOME/.projects.json file with your project configuration like so
 
@@ -23,10 +33,7 @@ Create a $HOME/.projects.json file with your project configuration like so
 ```
 
 ### How to run
-From within the directory where you have cloned this project you can run the following
-
-1. `make install # To install tmux and the dependencies`
-2. `make GROUP=<group-1> # To start the tmux sessions. Run is default goal in the Makefile`
-3. `make run GROUP=<group-1> # To start the tmux sessions`
-4. `make stop GROUP=<group-1> # To kill the tmux sessions`
-5. `tmux attach-session -t <name-of-session-1> # To join the sessions`
+1. `tmux_setup -h # To get the help menu`
+2. `tmux_setup -s <group-1> # To start the tmux sessions of the group`
+3. `tmux_setup -k <group-1> # To kill the tmux sessions of the group`
+4. `tmux attach-session -t <name-of-session-1> # To join the sessions`
