@@ -1,5 +1,10 @@
 # tmux_setup
-A tool that sets up tmux and adds tmux configurations for your projects
+
+A tool that sets up tmux and adds tmux configurations for your projects.
+Unlike similar tools, this project is written completely in bash and can be very easily setup.
+It clones your projects to the directory you have provided.
+The projects are opened in a tmux session with 2 windows.
+The first window opens vim and the second window has a vertical split with the right split split horizontally.
 
 ### Installation
 
