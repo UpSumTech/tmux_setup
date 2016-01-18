@@ -28,9 +28,12 @@ createWindowsAndPanes() {
 }
 
 execCommands() {
-  local name="$1"
-  tmux send-keys -t "$name:1.1" C-z 'vim' Enter
-  tmux send-keys -t "$name:2.2" C-z 'git status' Enter
+  local group="$1"
+  local name="$2"
+  tmux send-keys -t "$name:1.1" C-z "set_aws_credentials_for_profile "$group" && vim" Enter
+  tmux send-keys -t "$name:2.1" C-z "set_aws_credentials_for_profile "$group"" Enter
+  tmux send-keys -t "$name:2.2" C-z "set_aws_credentials_for_profile "$group" && git status" Enter
+  tmux send-keys -t "$name:2.3" C-z "set_aws_credentials_for_profile "$group"" Enter
 }
 
 setCursorPosition() {
@@ -39,18 +42,19 @@ setCursorPosition() {
 }
 
 startSession() {
-  local name="$1"
-  local dir="$2"
+  local group="$1"
+  local name="$2"
+  local dir="$3"
 
   [[ $( hasSession "$name" ) =~ true ]] && return
 
   createWindowsAndPanes "$name" "$dir"
-  execCommands "$name"
+  execCommands "$group" "$name"
   setCursorPosition "$name"
 }
 
 killSession() {
-  tmux kill-session -t "$1"
+  tmux kill-session -t "$2"
 }
 
 sourceConfig() {
@@ -78,7 +82,7 @@ loopOverSessions() {
     repo="${arr[1]}"
     dir="${arr[2]}"
     getRepo "$repo" "$dir"
-    eval "$(declare -F "$fn")" "$name" "$dir"
+    eval "$(declare -F "$fn")" "$group" "$name" "$dir"
   done
 }
 
