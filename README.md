@@ -37,6 +37,51 @@ Create a $HOME/.projects.json file with your project configuration like so
 }
 ```
 
+Expose a sh function for loading the correct env vars per group in your ~/.bashrc or /.bash_profile or some similar file for the login shell
+This is an example shell function.
+
+```shell
+set_env_vars_for_group() {
+  case "$1" in
+    <group-1>)
+      unset AWS_ACCESS_KEY
+      unset AWS_SECRET_KEY
+      unset AWS_ACCESS_KEY_ID
+      unset AWS_SECRET_ACCESS_KEY
+      unset AWS_DEFAULT_REGION
+
+      export AWS_ACCESS_KEY="<aws access key for group-1>"
+      export AWS_SECRET_KEY="<aws secret key for group-1>"
+      export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY"
+      export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_KEY"
+      export AWS_DEFAULT_REGION=us-east-1
+
+      ;;
+    <group-2>)
+      unset AWS_ACCESS_KEY
+      unset AWS_SECRET_KEY
+      unset AWS_ACCESS_KEY_ID
+      unset AWS_SECRET_ACCESS_KEY
+      unset AWS_DEFAULT_REGION
+
+      export AWS_ACCESS_KEY="<aws access key for group-2>"
+      export AWS_SECRET_KEY="<aws secret key for group-2>"
+      export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY"
+      export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_KEY"
+      export AWS_DEFAULT_REGION=us-west-2
+
+      ;;
+    *)
+      unset AWS_ACCESS_KEY
+      unset AWS_SECRET_KEY
+      unset AWS_ACCESS_KEY_ID
+      unset AWS_SECRET_ACCESS_KEY
+      unset AWS_DEFAULT_REGION
+      ;;
+  esac
+}
+```
+
 ### How to run
 1. `tmux_setup -h # To get the help menu`
 2. `tmux_setup -s <group-1> # To start the tmux sessions of the group`

@@ -30,10 +30,10 @@ createWindowsAndPanes() {
 execCommands() {
   local group="$1"
   local name="$2"
-  tmux send-keys -t "$name:1.1" C-z "set_aws_credentials_for_profile "$group" && vim" Enter
-  tmux send-keys -t "$name:2.1" C-z "set_aws_credentials_for_profile "$group"" Enter
-  tmux send-keys -t "$name:2.2" C-z "set_aws_credentials_for_profile "$group" && git status" Enter
-  tmux send-keys -t "$name:2.3" C-z "set_aws_credentials_for_profile "$group"" Enter
+  tmux send-keys -t "$name:1.1" C-z "set_env_vars_for_group "$group" && vim" Enter
+  tmux send-keys -t "$name:2.1" C-z "set_env_vars_for_group "$group"" Enter
+  tmux send-keys -t "$name:2.2" C-z "set_env_vars_for_group "$group" && git status" Enter
+  tmux send-keys -t "$name:2.3" C-z "set_env_vars_for_group "$group"" Enter
 }
 
 setCursorPosition() {
