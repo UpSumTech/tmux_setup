@@ -28,8 +28,15 @@ createWindowsAndPanes() {
 }
 
 execCommands() {
-  local group="$1"
-  local name="$2"
+  local name="$1"
+  tmux send-keys -t "$name:1.1" C-z "vim" Enter
+  tmux send-keys -t "$name:2.2" C-z "git status" Enter
+}
+
+execGroupCommands() {
+  local name="$1"
+  local group="$2"
+
   tmux send-keys -t "$name:1.1" C-z "set_env_vars_for_group "$group" && vim" Enter
   tmux send-keys -t "$name:2.1" C-z "set_env_vars_for_group "$group"" Enter
   tmux send-keys -t "$name:2.2" C-z "set_env_vars_for_group "$group" && git status" Enter
@@ -42,19 +49,24 @@ setCursorPosition() {
 }
 
 startSession() {
-  local group="$1"
-  local name="$2"
-  local dir="$3"
+  local name="$1"
+  local dir="$2"
+  local group="$3"
 
   [[ $( hasSession "$name" ) =~ true ]] && return
 
   createWindowsAndPanes "$name" "$dir"
-  execCommands "$group" "$name"
+  if [[ -z "$group" ]]; then
+    execCommands "$name"
+  else
+    execGroupCommands "$name" "$group"
+  fi
   setCursorPosition "$name"
 }
 
 killSession() {
-  tmux kill-session -t "$2"
+  local name="$1"
+  tmux kill-session -t "$name"
 }
 
 sourceConfig() {
@@ -66,7 +78,7 @@ getRepo() {
   [[ -d "$2" ]] || git clone "$1" "$2"
 }
 
-loopOverSessions() {
+loopOverGroupSessions() {
   local fn="$1"
   local group="$2"
   local name
@@ -82,7 +94,26 @@ loopOverSessions() {
     repo="${arr[1]}"
     dir="${arr[2]}"
     getRepo "$repo" "$dir"
-    eval "$(declare -F "$fn")" "$group" "$name" "$dir"
+    eval "$(declare -F "$fn")" "$name" "$dir" "$group"
+  done
+}
+
+loopOverSessions() {
+  local fn="$1"
+  local sessions="${@:2}"
+  local session
+  local name
+  local repo
+  local dir
+  declare -a arr
+
+  for session in ${sessions[@]}; do
+    arr=( $(cat "$PROJECTS_FILE" | jq "flatten(1) | .[] | select(.name == \"$session\") | [.name, .repo, .dir]" | sed -e "s#,##g;s#\[##g;s#\]##g;s#\"##g;s#\'##g") )
+    name="${arr[0]}"
+    repo="${arr[1]}"
+    dir="${arr[2]}"
+    getRepo "$repo" "$dir"
+    eval "$(declare -F "$fn")" "$name" "$dir"
   done
 }
 
@@ -90,17 +121,35 @@ displayInfo() {
   tmux list-sessions
 }
 
-startSessions() {
+startGroupSessions() {
   local group="$1"
+
   sourceConfig
-  loopOverSessions startSession "$group"
+  loopOverGroupSessions startSession "$group"
+}
+
+startSessions() {
+  local sessions="$@"
+
+  sourceConfig
+  loopOverSessions startSession "${sessions[@]}"
+}
+
+wrapAroundServerStartForGroup() {
+  local fn="$1"
+  local group="$2"
+
+  tmux new-session -d -s dummy
+  eval "$(declare -F "$fn")" "$group"
+  tmux kill-session -t dummy
 }
 
 wrapAroundServerStart() {
   local fn="$1"
-  local group="$2"
+  local sessions="${@:2}"
+
   tmux new-session -d -s dummy
-  eval "$(declare -F "$fn")" "$group"
+  eval "$(declare -F "$fn")" "${sessions[@]}"
   tmux kill-session -t dummy
 }
 
@@ -130,16 +179,26 @@ main() {
   validate
 
   local option
-  while getopts 's:k:h' option; do
+  while getopts 's:k:S:K:h' option; do
     case $option in
       s)
         local group=${OPTARG}
-        wrapAroundServerStart startSessions "$group"
+        wrapAroundServerStartForGroup startGroupSessions "$group"
+        displayInfo
+        ;;
+      S)
+        local sessions=(${@:$((OPTIND-1))})
+        wrapAroundServerStart startSessions "${sessions[@]}"
         displayInfo
         ;;
       k)
         local group=${OPTARG}
-        loopOverSessions killSession "$group"
+        loopOverGroupSessions killSession "$group"
+        ;;
+      K)
+        local sessions=(${@:$((OPTIND-1))})
+        loopOverSessions killSession "${sessions[@]}"
+        displayInfo
         ;;
       h)
         usage
