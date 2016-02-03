@@ -1,10 +1,11 @@
 # tmux_setup
 
 A tool that sets up tmux and adds tmux configurations for your projects.
-Unlike similar tools, this project is written completely in bash and can be very easily setup.
+This project is written in bash and can be setup with very few external dependencies.
+Most of those depencies would come pre installed on a ubuntu system.
 It clones your projects to the directory you have provided.
 The projects are opened in a tmux session with 2 windows.
-The first window opens vim and the second window has a vertical split with the right split split horizontally.
+The first window opens vim and the second window has a vertical split with the right split, split horizontally.
 
 ### Installation
 
@@ -54,7 +55,7 @@ set_env_vars_for_group() {
       export AWS_SECRET_KEY="<aws secret key for group-1>"
       export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY"
       export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_KEY"
-      export AWS_DEFAULT_REGION=us-east-1
+      export AWS_DEFAULT_REGION=us-west-2
 
       ;;
     <group-2>)
@@ -68,7 +69,7 @@ set_env_vars_for_group() {
       export AWS_SECRET_KEY="<aws secret key for group-2>"
       export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY"
       export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_KEY"
-      export AWS_DEFAULT_REGION=us-west-2
+      export AWS_DEFAULT_REGION=us-west-1
 
       ;;
     *)
