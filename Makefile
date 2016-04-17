@@ -9,8 +9,8 @@ AT_off := @
 AT_on :=
 AT = $(AT_$(DEBUG))
 
-UNAME = $(shell uname -s)
-TMUX_EXISTS = $(shell which tmux 2>/dev/null)
+UNAME := $(shell uname -s)
+TMUX_EXISTS := $(shell which tmux 2>/dev/null)
 
 ############ PHONY tasks #############
 .PHONY: install \
@@ -19,6 +19,7 @@ TMUX_EXISTS = $(shell which tmux 2>/dev/null)
 
 ########### Public targets ############
 install:
+	echo "==== $(TMUX_EXISTS) $(UNAME) ===="
 ifndef TMUX_EXISTS
 ifeq ($(UNAME),Linux)
 	$(AT)$(MAKE) -f $(THIS_FILE) install-linux
@@ -33,8 +34,8 @@ install-linux:
 	$(AT)sudo apt-get install -y python-software-properties software-properties-common
 	$(AT)sudo add-apt-repository -y ppa:pi-rho/dev
 	$(AT)sudo apt-get update
-	$(AT)sudo apt-get install tmux
-	$(AT)sudo apt-get install jq
+	$(AT)sudo apt-get install -y tmux
+	$(AT)sudo apt-get install -y jq
 
 install-mac:
 	$(AT)brew install tmux
