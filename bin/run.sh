@@ -73,6 +73,12 @@ sourceConfig() {
   tmux source-file "$ROOT_DIR/config/settings.conf" >/dev/null 2>&1
   tmux source-file "$ROOT_DIR/config/bindings.conf" >/dev/null 2>&1
   tmux source-file "$ROOT_DIR/config/plugins.conf" >/dev/null 2>&1
+  if [[ "$(uname)" = "Darwin" ]]; then
+    tmux source-file "$ROOT_DIR/config/extras-osx.conf" >/dev/null 2>&1
+  else
+    tmux source-file "$ROOT_DIR/config/extras-linux.conf" >/dev/null 2>&1
+  fi
+  tmux source-file "$ROOT_DIR/config/patches.conf" >/dev/null 2>&1
 }
 
 getRepo() {
