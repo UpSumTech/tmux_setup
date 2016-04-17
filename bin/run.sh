@@ -70,8 +70,9 @@ killSession() {
 }
 
 sourceConfig() {
-  tmux source-file "$ROOT_DIR/config/settings.conf" >/dev/null
-  tmux source-file "$ROOT_DIR/config/bindings.conf" >/dev/null
+  tmux source-file "$ROOT_DIR/config/settings.conf" >/dev/null 2>&1
+  tmux source-file "$ROOT_DIR/config/bindings.conf" >/dev/null 2>&1
+  tmux source-file "$ROOT_DIR/config/plugins.conf" >/dev/null 2>&1
 }
 
 getRepo() {
