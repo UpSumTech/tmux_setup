@@ -30,6 +30,9 @@ endif
 ########### Private targets ############
 
 install-linux:
+	$(AT)sudo apt-get install -y python-software-properties software-properties-common
+	$(AT)sudo add-apt-repository -y ppa:pi-rho/dev
+	$(AT)sudo apt-get update
 	$(AT)sudo apt-get install tmux
 	$(AT)sudo apt-get install jq
 
