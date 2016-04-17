@@ -10,7 +10,7 @@ AT_on :=
 AT = $(AT_$(DEBUG))
 
 UNAME = $(shell uname -s)
-TMUX_EXISTS = $(shell tmux -V 2>/dev/null)
+TMUX_EXISTS = $(shell which tmux 2>/dev/null)
 
 ############ PHONY tasks #############
 .PHONY: install \
