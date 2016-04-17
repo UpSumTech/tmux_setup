@@ -14,9 +14,9 @@ clonePlugins() {
   pushd "$( pwd )"
   cd "$PLUGINS_DIR"
   cat $LIB_DIR/tmux_setup/config/plugins.conf \
-    | grep "@plugin" \
-    | cut -d ' ' -f4 \
-    | sed s#^\"#\"https://github.com/# \
+    | grep "plugins" \
+    | cut -d '/' -f4 \
+    | awk '{print "https://github.com/tmux-plugins/" $1}' \
     | xargs -n 1 -I {} git clone {}
   popd
 }
