@@ -30,7 +30,7 @@ createWindowsAndPanes() {
 execCommands() {
   local name="$1"
   tmux send-keys -t "$name:1.1" C-z "vim" Enter
-  tmux send-keys -t "$name:2.2" C-z "git status" Enter
+  tmux send-keys -t "$name:2.2" C-z "[ -d .git ] && git status" Enter
 }
 
 execGroupCommands() {
@@ -85,6 +85,21 @@ getRepo() {
   [[ -d "$2" ]] || git clone "$1" "$2"
 }
 
+loopOverTempSessions() {
+  local fn="$1"
+  local sessionsInfo="${@:2}"
+  local sessionInfo
+  local name
+  local dir
+
+  for sessionInfo in ${sessionsInfo[@]}; do
+    name="$(echo "$sessionInfo" | cut -d ':' -f1)"
+    dir="$(echo "$sessionInfo" | cut -d ':' -f2)"
+    [[ ! -d "$dir" ]] && mkdir -p "$dir"
+    eval "$(declare -F "$fn")" "$name" "$dir"
+  done
+}
+
 loopOverGroupSessions() {
   local fn="$1"
   local group="$2"
@@ -135,6 +150,13 @@ startGroupSessions() {
   loopOverGroupSessions startSession "$group"
 }
 
+startTempSessions() {
+  local sessionsInfo="$@"
+
+  sourceConfig
+  loopOverTempSessions startSession "${sessionsInfo[@]}"
+}
+
 startSessions() {
   local sessions="$@"
 
@@ -178,7 +200,10 @@ usage() {
   OPTIONS:
   -h      Help menu.
   -s      Accepts a group name as argument. Start tmux sessions for that group.
+  -S      Accepts a set of names as argument. Starts tmux sessions for those.
   -k      Accepts a group name as argument. Kills all tmux sessions for that group.
+  -K      Accepts a set of names as argument. Kills tmux sessions for those.
+  -t      Accepts a set of names and dirs as arguments in the format <name:dir>. Starts tmux sessions for those.
   "
 }
 
@@ -205,6 +230,11 @@ main() {
       K)
         local sessions=(${@:$((OPTIND-1))})
         loopOverSessions killSession "${sessions[@]}"
+        displayInfo
+        ;;
+      t)
+        local sessionsInfo=(${@:$((OPTIND-1))})
+        wrapAroundServerStart startTempSessions "${sessionsInfo[@]}"
         displayInfo
         ;;
       h)
