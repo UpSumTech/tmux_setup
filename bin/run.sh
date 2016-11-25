@@ -10,7 +10,9 @@ err() {
 }
 
 hasSession() {
-  tmux has-session -t "$1" >/dev/null 2>&1
+  local name="$1"
+  # tmux has-session is buggy. It does partial match on session names and not exact match.
+  tmux list-sessions | cut -f1 -d ':' | tr -d " " | grep "^${name}$" >/dev/null 2>&1
   [[ "$?" -eq 0 ]] && echo "true"
 }
 
@@ -211,7 +213,7 @@ main() {
   validate
 
   local option
-  while getopts 's:k:S:K:h' option; do
+  while getopts 's:k:S:K:t:h' option; do
     case $option in
       s)
         local group=${OPTARG}
