@@ -31,7 +31,9 @@ createWindowsAndPanes() {
 
 execCommands() {
   local name="$1"
+  tmux send-keys -t "$name:1.1" C-z "cd .. && cd "$ROOT_DIR"" Enter
   tmux send-keys -t "$name:1.1" C-z "vim" Enter
+  tmux send-keys -t "$name:2.2" C-z "cd .. && cd "$ROOT_DIR"" Enter
   tmux send-keys -t "$name:2.2" C-z "[ -d .git ] && git status" Enter
 }
 
