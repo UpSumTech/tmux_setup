@@ -255,7 +255,6 @@ main() {
         local standAloneSession=${@:$((OPTIND-1)):1}
         local cmds=${@:$((OPTIND))}
         wrapAroundServerStart startStandAloneSession "$standAloneSession" "$cmds"
-        displayInfo
         ;;
       h)
         usage
