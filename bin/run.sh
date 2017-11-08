@@ -41,10 +41,10 @@ execGroupCommands() {
   local name="$1"
   local group="$2"
 
-  tmux send-keys -t "$name:1.1" C-z "set_env_vars_for_group "$group" && vim" Enter
-  tmux send-keys -t "$name:2.1" C-z "set_env_vars_for_group "$group"" Enter
-  tmux send-keys -t "$name:2.2" C-z "set_env_vars_for_group "$group" && git status" Enter
-  tmux send-keys -t "$name:2.3" C-z "set_env_vars_for_group "$group"" Enter
+  tmux send-keys -t "$name:1.1" C-z "echo "$group" && vim" Enter
+  tmux send-keys -t "$name:2.1" C-z "echo "$group"" Enter
+  tmux send-keys -t "$name:2.2" C-z "echo "$group" && git status" Enter
+  tmux send-keys -t "$name:2.3" C-z "echo "$group"" Enter
 }
 
 setCursorPosition() {
@@ -168,6 +168,16 @@ startSessions() {
   loopOverSessions startSession "${sessions[@]}"
 }
 
+startStandAloneSession() {
+  local session="$1"
+  shift 1
+  local cmds="$@"
+  sourceConfig
+  [[ $( hasSession "$session" ) =~ true ]] && return
+  tmux new-session -d -s "$session" -n cli
+  tmux send-keys -t "$session:1.1" C-z "$cmds" Enter
+}
+
 wrapAroundServerStartForGroup() {
   local fn="$1"
   local group="$2"
@@ -215,7 +225,7 @@ main() {
   validate
 
   local option
-  while getopts 's:k:S:K:t:h' option; do
+  while getopts 's:k:S:K:t:T:h' option; do
     case $option in
       s)
         local group=${OPTARG}
@@ -239,6 +249,12 @@ main() {
       t)
         local sessionsInfo=(${@:$((OPTIND-1))})
         wrapAroundServerStart startTempSessions "${sessionsInfo[@]}"
+        displayInfo
+        ;;
+      T)
+        local standAloneSession=${@:$((OPTIND-1)):1}
+        local cmds=${@:$((OPTIND))}
+        wrapAroundServerStart startStandAloneSession "$standAloneSession" "$cmds"
         displayInfo
         ;;
       h)
