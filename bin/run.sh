@@ -31,20 +31,23 @@ createWindowsAndPanes() {
 
 execCommands() {
   local name="$1"
-  tmux send-keys -t "$name:1.1" C-z "cd .. && cd "$ROOT_DIR"" Enter
-  tmux send-keys -t "$name:1.1" C-z "vim" Enter
-  tmux send-keys -t "$name:2.2" C-z "cd .. && cd "$ROOT_DIR"" Enter
-  tmux send-keys -t "$name:2.2" C-z "[ -d .git ] && git status" Enter
+  local dir="$2"
+
+  tmux send-keys -t "$name:1.1" C-z "export \$PROJECT_NAME=$name && export \$PROJECT_ROOT_DIR=$dir && cd .. && cd $ROOT_DIR" Enter
+  tmux send-keys -t "$name:1.1" C-z "export \$PROJECT_NAME=$name && export \$PROJECT_ROOT_DIR=$dir && vim" Enter
+  tmux send-keys -t "$name:2.2" C-z "export \$PROJECT_NAME=$name && export \$PROJECT_ROOT_DIR=$dir && cd .. && cd $ROOT_DIR" Enter
+  tmux send-keys -t "$name:2.2" C-z "export \$PROJECT_NAME=$name && export \$PROJECT_ROOT_DIR=$dir && test -d .git && git status" Enter
 }
 
 execGroupCommands() {
   local name="$1"
   local group="$2"
+  local dir="$3"
 
-  tmux send-keys -t "$name:1.1" C-z "echo "$group" && vim" Enter
-  tmux send-keys -t "$name:2.1" C-z "echo "$group"" Enter
-  tmux send-keys -t "$name:2.2" C-z "echo "$group" && git status" Enter
-  tmux send-keys -t "$name:2.3" C-z "echo "$group"" Enter
+  tmux send-keys -t "$name:1.1" C-z "export \$PROJECT_NAME=$name && export \$PROJECT_ROOT_DIR=$dir && echo $group && vim" Enter
+  tmux send-keys -t "$name:2.1" C-z "export \$PROJECT_NAME=$name && export \$PROJECT_ROOT_DIR=$dir && echo $group" Enter
+  tmux send-keys -t "$name:2.2" C-z "export \$PROJECT_NAME=$name && export \$PROJECT_ROOT_DIR=$dir && echo $group && git status" Enter
+  tmux send-keys -t "$name:2.3" C-z "export \$PROJECT_NAME=$name && export \$PROJECT_ROOT_DIR=$dir && echo $group" Enter
 }
 
 setCursorPosition() {
@@ -61,9 +64,9 @@ startSession() {
 
   createWindowsAndPanes "$name" "$dir"
   if [[ -z "$group" ]]; then
-    execCommands "$name"
+    execCommands "$name" "$dir"
   else
-    execGroupCommands "$name" "$group"
+    execGroupCommands "$name" "$group" "$dir"
   fi
   setCursorPosition "$name"
 }
