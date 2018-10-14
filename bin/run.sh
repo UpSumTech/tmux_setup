@@ -33,10 +33,15 @@ execCommands() {
   local name="$1"
   local dir="$2"
 
-  tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name && export PROJECT_ROOT_DIR=$dir && cd .. && cd $ROOT_DIR" Enter
-  tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name && export PROJECT_ROOT_DIR=$dir && vim" Enter
-  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name && export PROJECT_ROOT_DIR=$dir && cd .. && cd $ROOT_DIR" Enter
-  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name && export PROJECT_ROOT_DIR=$dir && test -d .git && git status" Enter
+  tmux send-keys -t "$name:1.1" "sleep 5; cd .. && cd $ROOT_DIR; tmux wait-for -S shell-ready-1-1" C-m\; wait-for shell-ready-1-1
+  tmux send-keys -t "$name:2.1" "sleep 5; cd .. && cd $ROOT_DIR; tmux wait-for -S shell-ready-2-1" C-m\; wait-for shell-ready-2-1
+  tmux send-keys -t "$name:2.2" "sleep 5; cd .. && cd $ROOT_DIR; tmux wait-for -S shell-ready-2-2" C-m\; wait-for shell-ready-2-2
+  tmux send-keys -t "$name:2.3" "sleep 5; cd .. && cd $ROOT_DIR; tmux wait-for -S shell-ready-2-3" C-m\; wait-for shell-ready-2-3
+
+  tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; vim" Enter
+  tmux send-keys -t "$name:2.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir" Enter
+  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; test -d .git && git status" Enter
+  tmux send-keys -t "$name:2.3" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir" Enter
 }
 
 execGroupCommands() {
@@ -44,10 +49,15 @@ execGroupCommands() {
   local group="$2"
   local dir="$3"
 
-  tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name && export PROJECT_ROOT_DIR=$dir && echo $group && vim" Enter
-  tmux send-keys -t "$name:2.1" C-z "export PROJECT_NAME=$name && export PROJECT_ROOT_DIR=$dir && echo $group" Enter
-  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name && export PROJECT_ROOT_DIR=$dir && echo $group && git status" Enter
-  tmux send-keys -t "$name:2.3" C-z "export PROJECT_NAME=$name && export PROJECT_ROOT_DIR=$dir && echo $group" Enter
+  tmux send-keys -t "$name:1.1" "sleep 5; cd .. && cd $ROOT_DIR; tmux wait-for -S shell-ready-1-1" C-m\; wait-for shell-ready-1-1
+  tmux send-keys -t "$name:2.1" "sleep 5; cd .. && cd $ROOT_DIR; tmux wait-for -S shell-ready-2-1" C-m\; wait-for shell-ready-2-1
+  tmux send-keys -t "$name:2.2" "sleep 5; cd .. && cd $ROOT_DIR; tmux wait-for -S shell-ready-2-2" C-m\; wait-for shell-ready-2-2
+  tmux send-keys -t "$name:2.3" "sleep 5; cd .. && cd $ROOT_DIR; tmux wait-for -S shell-ready-2-3" C-m\; wait-for shell-ready-2-3
+
+  tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; vim" Enter
+  tmux send-keys -t "$name:2.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir" Enter
+  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; git status" Enter
+  tmux send-keys -t "$name:2.3" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir" Enter
 }
 
 setCursorPosition() {
