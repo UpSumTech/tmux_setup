@@ -39,10 +39,10 @@ execCommands() {
   (tmux send-keys -t "$name:2.3" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-3" C-m\; wait-for shell-ready-2-3)&
   wait
 
-  tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; vim" Enter
-  tmux send-keys -t "$name:2.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir" Enter
-  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; test -d .git && git status" Enter
-  tmux send-keys -t "$name:2.3" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir" Enter
+  tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; vim" Enter
+  tmux send-keys -t "$name:2.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; activate_history_sync" Enter
+  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; test -d .git && git status" Enter
+  tmux send-keys -t "$name:2.3" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync" Enter
 }
 
 execGroupCommands() {
@@ -56,10 +56,10 @@ execGroupCommands() {
   (tmux send-keys -t "$name:2.3" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-3" C-m\; wait-for shell-ready-2-3)&
   wait
 
-  tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; vim" Enter
-  tmux send-keys -t "$name:2.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir" Enter
-  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; git status" Enter
-  tmux send-keys -t "$name:2.3" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir" Enter
+  tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; vim" Enter
+  tmux send-keys -t "$name:2.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync" Enter
+  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; git status" Enter
+  tmux send-keys -t "$name:2.3" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync" Enter
 }
 
 setCursorPosition() {
