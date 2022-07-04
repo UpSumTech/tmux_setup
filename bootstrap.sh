@@ -23,7 +23,7 @@ clonePlugins() {
 
 cloneRepo() {
   rm -rf "$LIB_DIR/tmux_setup" >/dev/null 2>&1 # Careful with this command
-  git clone "git@github.com:sumanmukherjee03/tmux_setup.git" "$LIB_DIR/tmux_setup"
+  git clone "git@github.com:UpSumTech/tmux_setup.git" "$LIB_DIR/tmux_setup"
 }
 
 build() {
