@@ -20,13 +20,9 @@ createWindowsAndPanes() {
   local name="$1"
   local dir="$2"
 
-  tmux new-session -d -s "$name" -n ide -c "$dir"
-  tmux new-window -k -n "cli" -t "$name":2 -c "$dir"
-  tmux select-window -t "$name:2"
-  tmux select-pane -t 1
-  tmux split-window -h -p 50 -c "$dir"
-  tmux select-pane -t 2
-  tmux split-window -v -p 50 -c "$dir"
+  tmux new-session -d -s "$name" -n ide -c "$dir" -x "$(tput cols)" -y "$(tput lines)"
+  tmux new-window -k -n "git" -t "$name":2 -c "$dir"
+  tmux new-window -k -n "cli" -t "$name":3 -c "$dir"
 }
 
 execCommands() {
@@ -34,15 +30,15 @@ execCommands() {
   local dir="$2"
 
   (tmux send-keys -t "$name:1.1" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-1-1" C-m\; wait-for shell-ready-1-1)&
+  wait
   (tmux send-keys -t "$name:2.1" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-1" C-m\; wait-for shell-ready-2-1)&
-  (tmux send-keys -t "$name:2.2" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-2" C-m\; wait-for shell-ready-2-2)&
-  (tmux send-keys -t "$name:2.3" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-3" C-m\; wait-for shell-ready-2-3)&
+  wait
+  (tmux send-keys -t "$name:3.1" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-1" C-m\; wait-for shell-ready-2-1)&
   wait
 
   tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; vim" Enter
   tmux send-keys -t "$name:2.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; activate_history_sync" Enter
-  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; test -d .git && git status" Enter
-  tmux send-keys -t "$name:2.3" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync" Enter
+  tmux send-keys -t "$name:3.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; activate_history_sync" Enter
 }
 
 execGroupCommands() {
@@ -51,15 +47,15 @@ execGroupCommands() {
   local dir="$3"
 
   (tmux send-keys -t "$name:1.1" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-1-1" C-m\; wait-for shell-ready-1-1)&
+  wait
   (tmux send-keys -t "$name:2.1" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-1" C-m\; wait-for shell-ready-2-1)&
-  (tmux send-keys -t "$name:2.2" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-2" C-m\; wait-for shell-ready-2-2)&
-  (tmux send-keys -t "$name:2.3" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-3" C-m\; wait-for shell-ready-2-3)&
+  wait
+  (tmux send-keys -t "$name:3.1" "sleep 3; cd $HOME && cd $dir; sleep 3; tmux wait-for -S shell-ready-2-1" C-m\; wait-for shell-ready-2-1)&
   wait
 
   tmux send-keys -t "$name:1.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; vim" Enter
   tmux send-keys -t "$name:2.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync" Enter
-  tmux send-keys -t "$name:2.2" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync; git status" Enter
-  tmux send-keys -t "$name:2.3" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync" Enter
+  tmux send-keys -t "$name:3.1" C-z "export PROJECT_NAME=$name; export PROJECT_ROOT_DIR=$dir; type -t activate_history_sync | grep -i function >/dev/null 2>&1 && activate_history_sync" Enter
 }
 
 setCursorPosition() {
